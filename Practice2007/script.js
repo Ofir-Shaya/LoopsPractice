@@ -23,19 +23,25 @@ function handleInfo() {
     },
   };
   const infoDiv = document.getElementById("infoDiv");
-  infoDiv.innerHTML = `<ul>
-  <li>name => ${info.name}</li>
-  <li>age => ${info.age}</li>
-  <li>email => ${info.email}</li>
-  <li>phone => ${info.phone}</li>
-  <li>Address => </li>
-  <ul>
-    <li>Address city => ${info.address.city}</li>
-    <li>Address street => ${info.address.street}</li>
-    <li>Address number => ${info.address.number}</li>
-  </ul>
-</ul>`;
-  console.log(infoDiv);
+  infoDiv.innerHTML = ``;
+  infoDiv.appendChild(createCard(info));
+}
+
+function createCard(cardInfo) {
+  const cardUl = document.createElement("ul");
+
+  for (const key in cardInfo) {
+    const cardLi = document.createElement("li");
+    if (typeof cardInfo[key] === "object") {
+      cardLi.innerHTML = `<li> ${key} =>`;
+      cardUl.appendChild(cardLi);
+      cardUl.appendChild(createCard(cardInfo[key]));
+    } else {
+      cardLi.innerHTML = `<li> ${key} => ${cardInfo[key]}`;
+      cardUl.appendChild(cardLi);
+    }
+  }
+  return cardUl;
 }
 
 const products = [
@@ -65,30 +71,12 @@ const products = [
   },
 ];
 
-function createCard(title, price, category, barcode) {
-  return `
-  <div class="card" style="width: 18rem">
-    <div class="card-body">
-     <h5 class="card-title">${title}</h5>
-     <h6 class="card-subtitle mb-2 text-muted">${price}</h6>
-     <a href="#" class="card-link">${category}</a>
-    <a href="#" class="card-link">${barcode}</a>
-</div>
-</div>`;
-}
-
 function handleCards() {
   const productsInside = products;
   const cardsDiv = document.getElementById("cards");
   for (const product of productsInside) {
     const card = document.createElement("div");
-    card.innerHTML = createCard(
-      product.title,
-      product.price,
-      product.category,
-      product.barcode
-    );
-    console.log(card);
+    card.appendChild(createCard(product));
     cardsDiv.appendChild(card);
   }
 }
